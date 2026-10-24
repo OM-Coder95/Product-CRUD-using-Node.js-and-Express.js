@@ -1,72 +1,8 @@
-const cl = console.log;
 
-let products = [
-    {
-        "id": "101",
-        "productName": "Laptop",
-        "price": 55000,
-        "brand": "Dell",
-        "category": "Electronics",
-        "inStock": true
-    },
-    {
-        "id": "102",
-        "productName": "Smartphone",
-        "price": 25000,
-        "brand": "Samsung",
-        "category": "Electronics",
-        "inStock": true
-    },
-    {
-        "id": "103",
-        "productName": "Headphones",
-        "price": 2000,
-        "brand": "Boat",
-        "category": "Accessories",
-        "inStock": false
-    },
-    {
-        "id": "104",
-        "productName": "Smartwatch",
-        "price": 5000,
-        "brand": "Noise",
-        "category": "Wearables",
-        "inStock": true
-    }
-];
+const products = require("../productData/productData");
 
-const express = require("express");
-const cors = require("cors");
-
-const port = 8070;
-
-const app = express();
-
-app.use(express.json());
-app.use(cors());
-
-// Multiple product 
-
-app.get("/api/product", (req, res) => {
-    try {
-        res.status(200).json({
-            success: true,
-            message: "Product Data Fetched",
-            body: products
-        })
-
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Network Error",
-            error: err.message
-        })
-    }
-})
-
-// single product
-
-app.get("/api/product/:id", (req, res) => {
+// single Product
+function getSingleProduct(req, res) {
     try {
         const id = req.params.id;
 
@@ -92,11 +28,30 @@ app.get("/api/product/:id", (req, res) => {
             error: err.message
         })
     }
-})
+}
 
-// Create Post
+// all Products
 
-app.post("/api/product", (req, res) => {
+function getAllProducts(req, res) {
+    try {
+        res.status(200).json({
+            success: true,
+            message: "Product Data Fetched",
+            body: products
+        })
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Network Error",
+            error: err.message
+        })
+    }
+}
+
+// create Products
+
+function onProductAdd(req, res) {
     try {
         let createdObj = {
             ...req.body,
@@ -118,11 +73,11 @@ app.post("/api/product", (req, res) => {
             error: err.message
         })
     }
-})
+}
 
-// update Project
+// update Product
 
-app.patch("/api/product/:id", (req, res) => {
+function updateProduct(req, res) {
     try {
         let updateId = req.params.id;
         let getIndex = products.findIndex(p => p.id === updateId);
@@ -154,11 +109,11 @@ app.patch("/api/product/:id", (req, res) => {
             error: err.message
         })
     }
-})
+}
 
-// Delete Product
+// delete Product
 
-app.delete("/api/product/:id", (req, res) => {
+function deleteProduct(req, res) {
     try {
         let removeId = req.params.id;
         let getIndex = products.findIndex(p => p.id === removeId);
@@ -184,9 +139,12 @@ app.delete("/api/product/:id", (req, res) => {
             error: err.message
         })
     }
-})
+}
 
-app.listen(port, () => {
-    cl(`Server is running on port ${port}`)
-})
-
+module.exports = {
+    getAllProducts,
+    getSingleProduct,
+    onProductAdd,
+    updateProduct,
+    deleteProduct
+}
